@@ -38,11 +38,27 @@ insert into orders(custID,orderID,orderDate,orderQty) Values(107,25,'2020-01-03'
 insert into orders(custID,orderID,orderDate,orderQty) Values(107,26,'2020-01-03',16);
 insert into orders(custID,orderID,orderDate,orderQty) Values(107,27,'2020-01-03',23);
 
-CREATE   PROCEDURE insertCUST (@xcustID  INT In ,  @xcustName  Varchar(20) in)
-AS
-begin
-	insert into customer(custID,custName) Values(@xcustID,@xcustName)
-end;
-  
-)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insertIntoCust`(IN custId INT,IN custNAME varchar(10))
+BEGIN
+	Insert into customer(custID,custName) Values(custId,custNAME);
+END
+
+USE `mydb`;
+DROP procedure IF EXISTS `insertIntoOrders`;
+
+DELIMITER $$
+USE `mydb`$$
+CREATE PROCEDURE `insertIntoOrders` (
+	IN vcustID INT,
+    IN vorderID INT,
+    IN vorderDate date,
+    IN vorderQty INT)
+BEGIN
+	insert into orders(custID,orderID,orderDate,orderQty) Values(vcustID,vorderID,vorderDate,vorderQty);
+END$$
+
+DELIMITER ;
+CALL insertIntoCust(108,'Hello')
+CALL insertIntoOrders(108,28,'2020-01-03',25)
+select * from orders;
 select customer.custName,customer.custID,orders.orderDate,sum(orders.orderQty) from customer inner join orders on customer.custID=orders.custID group by customer.custID,orders.orderDate having sum(orders.orderQty)>50
