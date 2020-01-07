@@ -61,7 +61,7 @@ class PersonWihtEquals{
 		return this.firstName.equals(p.firstName);
 	}
 }
-public class Test {
+public class EqualsNHashCode {
 	public static void main(String[] args) {
 		Set<Persons> hs = new HashSet<Persons>();
 		Persons p1 = new Persons("Ram","Kapur");
