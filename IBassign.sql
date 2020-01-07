@@ -38,11 +38,6 @@ insert into orders(custID,orderID,orderDate,orderQty) Values(107,25,'2020-01-03'
 insert into orders(custID,orderID,orderDate,orderQty) Values(107,26,'2020-01-03',16);
 insert into orders(custID,orderID,orderDate,orderQty) Values(107,27,'2020-01-03',23);
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `insertIntoCust`(IN custId INT,IN custNAME varchar(10))
-BEGIN
-	Insert into customer(custID,custName) Values(custId,custNAME);
-END
-
 USE `mydb`;
 DROP procedure IF EXISTS `insertIntoOrders`;
 
@@ -61,4 +56,35 @@ DELIMITER ;
 CALL insertIntoCust(108,'Hello')
 CALL insertIntoOrders(108,28,'2020-01-03',25)
 select * from orders;
+
+USE `mydb`;
+DROP function IF EXISTS `custID`;
+
+DELIMITER $$
+USE `mydb`$$
+CREATE FUNCTION custID ( name_in VARCHAR(50) )
+RETURNS INT
+
+BEGIN
+
+   DECLARE done INT DEFAULT FALSE;
+   DECLARE custID INT DEFAULT 0;
+
+   DECLARE c1 CURSOR FOR
+     SELECT custID
+     FROM customer where custName=name_in;
+
+   DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+   OPEN c1;
+   FETCH c1 INTO custID;
+
+   CLOSE c1;
+
+   RETURN siteID;
+
+END;$$
+
+DELIMITER ;
+SELECT  custID("Cat");
 select customer.custName,customer.custID,orders.orderDate,sum(orders.orderQty) from customer inner join orders on customer.custID=orders.custID group by customer.custID,orders.orderDate having sum(orders.orderQty)>50
