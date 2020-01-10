@@ -2,6 +2,7 @@ package test;
 import java.sql.*;
 public class MyCon {
 	public static void main(String[] args) {
+		Connection con=null;
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
@@ -9,7 +10,7 @@ public class MyCon {
 			e.printStackTrace();
 		}
 		try {
-			Connection con= DriverManager.getConnection("jdbc:mysql://localhost:3306/mydb","root","root");
+			con= DriverManager.getConnection("jdbc:mysql://localhost:3306/mydb","root","root");
 			
 			Statement stmt=con.createStatement();  
 			ResultSet rs=stmt.executeQuery("select custID,custName from customer");  
@@ -56,11 +57,19 @@ public class MyCon {
 			stmt.executeBatch();//executing the batch  
 			  
 			con.commit();  
-			con.close();  
-			
+			con.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally {
+			if (con!= null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}  
 		}
 		
 	}
